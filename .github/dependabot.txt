@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Monitor the Maven (Java) project in ms-reactor-workshop/workshop/VulnerableApp
+  - package-ecosystem: "maven"
+    directory: "/workshop/VulnerableApp"
+    schedule:
+      interval: "daily"
+
+  # Monitor the Node.js (JavaScript) project in ms-reactor-workshop/workshop/VulnerableAppTwo
+  - package-ecosystem: "npm"
+    directory: "/workshop/VulnerableAppTwo"
+    schedule:
+      interval: "daily"

@@ -43,6 +43,9 @@ Therefore we are going to look at a couple of mechanisms to detect the same secr
 
 ![Workshop - Secrets scanning](./img/secretsconfig.png "Secrets configuration")
 
+*Note:* Make sure when you access this page that `Push protection` rules are enabled. This should be by default but if for some reason it is not switched on, do this now. 
+
+
 We're now going to demonstrate how you can add a custom pattern to detect secrets like this. 
 
 Select the `New pattern` option and then use the following regex to test for GitHub PATs.

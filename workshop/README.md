@@ -88,6 +88,8 @@ If you select the detection finding, you will find some helpful information incl
 
 3. The detected location
 
+![Workshop - PAT detection rule in action](./img/PATdetectionrule.png "PAT detection rule in action")
+
 
 Custom rules are not the only mechanism we can use to block secrets such as the PAT being pushed up to GitHub. In fact if you create your own PAT you will see that GitHub will block you pushing it. Let's try a couple of techniques to see this in action. The first will use the command line. If you do not have Git setup locally on your machine feel free to skip ahead to the example where we edit a file directly in GitHub. first however, let's create a PAT.
 
@@ -180,6 +182,8 @@ Once you have done this, click `Commit changes...`
 Update the commit description and push it to directly to `main`. What happens?
 
 You should now see a pop up box that a secret has been detected! You can choose to ignore this (not a good idea), mark it as a false positive or select that it is a test token.
+
+![Workshop - PAT blocked on GHEC](./img/PATblocked.png "PAT blocked on GHEC")
 
 So this was fairly simple. We demonstrated that we can detect PATs both using custom rules and GitHubs built in features.
 

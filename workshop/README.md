@@ -21,7 +21,7 @@ One is Java based, and the second is JavaScript. These can be found under:
 
 ### Secrets scanning 
 
-GitHub provides us with an built-in mechanism to scan for secrets. This includes the ability to scan for custom patterns as well as common key formats, such as AWS API keys.
+GitHub provides us with an built-in mechanism to scan for secrets. This includes the ability to scan for custom patterns as well as common key formats, such as Azure Function API keys.
 
 This section of the workshop will give you hands on experience through enabing GitHub Secret scanning, using push protection rules and creating our own custom detection rule.
 
@@ -29,11 +29,11 @@ Configuration of Secrets scanning in GitHub, including the configuration of cust
 
 ![Workshop - Secrets scanning](./img/secretsconfig.png "Secrets configuration")
 
-Select the `New pattern` option and then use the following regex to test for AWS API keys.
+Select the `New pattern` option and then use the following regex to test for Azure Function keys.
 
 ```console
 
-"[A-Za-z0-9/+=]{40}"
+"(?i)(\b[0-9a-zA-Z]+[-]*[0-9a-zA-Z]+[-]*[0-9a-zA-Z]+[-]*[0-9a-zA-Z]+[-]*[0-9a-zA-Z]+\b)"
 
 ```
 

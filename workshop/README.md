@@ -21,20 +21,31 @@ One is Java based, and the second is JavaScript. These can be found under:
 
 ### Secrets scanning 
 
-GitHub provides us with an built-in mechanism to scan for secrets. This includes the ability to scan for custom patterns as well as common key formats, such as Azure Function API keys.
+GitHub provides us with an built-in mechanism to scan for secrets. This includes the ability to scan for custom patterns as well as common key formats, such as Personal Access Tokens (PATs).
 
 This section of the workshop will give you hands on experience through enabing GitHub Secret scanning, using push protection rules and creating our own custom detection rule.
 
 
-We've included an example of an PAT (GitHub Personal Access Token) in our `vuln.ini` in VulnerableAppTwo. This is our vulnerable JavaScript application. This PAT is an example of where a c
+We've included an example of an PAT (GitHub Personal Access Token) in our `vuln.ini` in VulnerableAppTwo. This is our vulnerable JavaScript application. This PAT is an example of where an engineer may have accidentally added a secret to a configuration file. For example the PAT may have been created in GitHub Enterprise Server. The repository was then migrated to GitHub Enterprise Cloud. While the PAT couldn't be used to access content in GHEC, a bad actor who finds it, and has access to GHES would be able to leverage it to commit code the repository.
 
-Configuration of Secrets scanning in GitHub, including the configuration of custom patterns is found under `Settings > Code security and analysis`.
+A key thing to remember in the case of PATs is:
+
+```console
+
+For GitHub tokens, we check the validity of the secret to determine whether the secret is active or inactive. This means that for legacy tokens, secret scanning won't detect a GitHub Enterprise Server personal access token on GitHub Enterprise Cloud. Similarly, a GitHub Enterprise Cloud personal access token won't be found on GitHub Enterprise Server.
+
+```
+
+You can read more at: https://docs.github.com/en/code-security/secret-scanning/troubleshooting-secret-scanning#about-legacy-github-tokens
+
+
+Therefore we are going to look at a couple of mechanisms to detect the same secret type. Configuration of Secrets scanning in GitHub, including the configuration of custom patterns is found under `Settings > Code security and analysis`.
 
 ![Workshop - Secrets scanning](./img/secretsconfig.png "Secrets configuration")
 
 We're now going to demonstrate how you can add a custom pattern to detect secrets like this. 
 
-Select the `New pattern` option and then use the following regex to test for Azure Function keys.
+Select the `New pattern` option and then use the following regex to test for GitHub PATs.
 
 ```console
 
@@ -76,10 +87,105 @@ If you select the detection finding, you will find some helpful information incl
 2. Remediation steps
 
 3. The detected location
- 
+
+
+Custom rules are not the only mechanism we can use to block secrets such as the PAT being pushed up to GitHub. In fact if you create your own PAT you will see that GitHub will block you pushing it. Let's try a couple of techniques to see this in action. The first will use the command line. If you do not have Git setup locally on your machine feel free to skip ahead to the example where we edit a file directly in GitHub. first however, let's create a PAT.
+
+In your profile select `Settings` and then navgate to `Settings -> Developer settings -> Personal access tokens -> Tokens (classic).`
+
+Now click the `Generate new token` button and select the `Generate new token (classic)`. 
+
+Set the `Note` to be something like `Microsoft workshop token`.
+
+As this token is from our account but we don't want it to actually be used to do anything let's make sure it expires in the next 24 hours. We can do this by selecting `Expiration` and then setting the date to `Custom`. Now set the date for tomorrow. 
+
+By default no `scopes` are selected. This is fine as we don't eant our token to actually be able to do anything. 
+
+Next click the `Generate token` option. Copy the token, we are going to use this momentarily. 
+
+This is now where you can decide to edit locally and push, directly in the browser on GitHub.com or both!
+
+
+### Blocking local pushes 
+
+Let's open up the `vuln.ini` file and replaced the PAT with the one we generated. Save the file and commit it.
+
+No try and push it. What happens?
+
+It should be blocked. You will see something similar to this:
+
+```console
+
+Enumerating objects: 17, done.
+Counting objects: 100% (17/17), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (12/12), done.
+Writing objects: 100% (12/12), 5.95 KiB | 5.95 MiB/s, done.
+Total 12 (delta 7), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (7/7), completed with 4 local objects.
+remote: error: GH013: Repository rule violations found for refs/heads/main.
+remote: 
+remote: - GITHUB PUSH PROTECTION
+remote:   —————————————————————————————————————————
+remote:     Resolve the following violations before pushing again
+remote: 
+remote:     - Push cannot contain secrets
+remote: 
+remote:     
+remote:      (?) Learn how to resolve a blocked push
+remote:      https://docs.github.com/code-security/secret-scanning/pushing-a-branch-blocked-by-push-protection
+remote:     
+remote:     
+remote:       —— GitHub Personal Access Token ——————————————————————
+remote:        locations:
+remote:          - commit: e45adf816ba46bb0f05419a1fe91ed4c56254dfe
+remote:            path: workshop/VulnerableAppTwo/vuln.ini:45
+remote:     
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.
+remote:        https://github.com/<your user>/ms-reactor-workshop/security/secret-scanning/unblock-secret/2gHxUMtKeswqDKp1aSVSQkyqdy5
+remote:     
+remote: 
+remote: 
+To github.com:<your user>/ms-reactor-workshop.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'github.com:<your user>/ms-reactor-workshop.git'
+
+``` 
+
+Here you can see the push was blocked as the PAT was present. 
+
+What happens if you try and force push? Give it a try
+
+```console
+push -f
+```
+
+You should also see it's blocked!
+
+If you want to undo the change, you can roll back your commit and remove the PAT from the file.
+
+Let's try the same in the browser.
+
+
+### Blocking pushes on GitHub.con
+
+Let's open the `vuln.ini` file on GitHub.com. Navigate to your repository and access the file at `workshop/VulnerableAppTwo/vuln.ini`. Now edit the file using the pencil icon in the top right. 
+
+Navigate down the line with the PAT. 
+
+Let's replace the value assigned to `gh_pat_token` with the token we just generated.
+
+Once you have done this, click `Commit changes...`
+
+Update the commit description and push it to directly to `main`. What happens?
+
+You should now see a pop up box that a secret has been detected! You can choose to ignore this (not a good idea), mark it as a false positive or select that it is a test token.
+
+So this was fairly simple. We demonstrated that we can detect PATs both using custom rules and GitHubs built in features.
+
 If you wish, you can remove the key from your forked repository and commit and push the change.
 
-Re-visit this screen and then choose an option from the `Close as` drop down to close out the finding, for example `Revoked`
+Re-visit `Security > Secret scanning`  screen and then choose an option from the `Close as` drop down to close out the finding, for example `Revoked`
 
 Congrats, you've written a detection rule and closed out a finding. 
 

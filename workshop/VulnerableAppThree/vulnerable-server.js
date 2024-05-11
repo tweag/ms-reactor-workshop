@@ -35,13 +35,23 @@ app.get('/exec', (req, res) => {
   const { cmd } = req.query;
   const args = cmd.split(' ');
   const command = args.shift();
-  require('child_process').execFile(command, args, (error, stdout, stderr) => {
-    if (error) {
-      return res.status(500).send(`Error: ${error.message}`);
+  const allowedCommands = ['ls', 'echo', 'cat']; // Add more allowed commands as needed
+  if (!allowedCommands.includes(command)) {
+    return res.status(400).send('Invalid command');
+  }
+  const spawn = require('child_process').spawn;
+  const child = spawn(command, args);
+  let output = '';
+  child.stdout.on('data', (data) => {
+    output += data;
+  });
+  child.stderr.on('data', (data) => {
+    return res.status(500).send(`Stderr: ${data}`);
+  });
+  child.on('close', (code) => {
+    if (code !== 0) {
+      return res.status(500).send(`Process exited with code ${code}`);
     }
-    if (stderr) {
-      return res.status(500).send(`Stderr: ${stderr}`);
-    }
-    res.send(`Command output: ${stdout}`);
+    res.send(`Command output: ${output}`);
   });
 });

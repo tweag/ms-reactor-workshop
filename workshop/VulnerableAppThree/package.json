@@ -1,0 +1,16 @@
+{
+  "name": "vulnerable-node-app",
+  "version": "1.0.0",
+  "description": "A simple Node.js app with intentional vulnerabilities to demonstrate GitHub Copilot's capabilities.",
+  "main": "vulnerable-server.js",
+  "scripts": {
+    "start": "node vulnerable-server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.2",
+    "body-parser": "^1.19.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

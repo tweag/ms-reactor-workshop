@@ -24,3 +24,4 @@ This section of the workshop includes:
 Here we discuss the strategic rollout of GHAS with Microsoft Defender for Cloud.
 A demonstratino of Azure Function app hook integration is also provided
 The goal here is to illustrate synergy between these services for comprehensive code-to-cloud security.
+

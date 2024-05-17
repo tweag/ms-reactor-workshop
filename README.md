@@ -20,3 +20,4 @@ This section delves into the strategic integration of GHAS with Microsoft Defend
 
 Remember, this workshop is designed to be interactive, so you'll get the chance to apply what you learn immediately. We look forward to guiding you through these powerful tools and techniques that will enhance your security and development efforts.
 
+

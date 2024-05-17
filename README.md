@@ -19,3 +19,4 @@ Experience our interactive labs which include
 This section delves into the strategic integration of GHAS with Microsoft Defender for Cloud. You'll see a live demonstration of how to connect an Azure Function app, showcasing the seamless synergy between these services for end-to-end security.
 
 Remember, this workshop is designed to be interactive, so you'll get the chance to apply what you learn immediately. We look forward to guiding you through these powerful tools and techniques that will enhance your security and development efforts.
+

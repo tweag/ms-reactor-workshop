@@ -48,5 +48,19 @@ public class VulnerableApp extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // Insecure Deserialization Vulnerability
+        try {
+            // Simulating deserialization of an untrusted object
+            String serializedObject = request.getParameter("serializedData");
+            byte[] data = serializedObject.getBytes("ISO-8859-1");
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+            Object deserializedObject = ois.readObject(); // This line is the vulnerable spot
+            ois.close();
+
+            response.getWriter().println("Deserialized Object: " + deserializedObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
